@@ -1,0 +1,71 @@
+{
+  "name": "aha.assign-copilot",
+  "description": "Assign to Copilot",
+  "version": "0.0.0",
+  "author": "tim-field",
+  "repository": {
+    "type": "git",
+    "url": "TODO: Add the GitHub URL to your extension in package.json"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^16.14.68",
+    "aha-cli": "^1.17.0"
+  },
+  "ahaExtension": {
+    "contributes": {
+      "views": {
+        "assignCopilotButton": {
+          "title": "Copilot",
+          "host": "attribute",
+          "entryPoint": "src/views/AssignCopilotButton.tsx",
+          "recordTypes": [
+            "Feature",
+            "Requirement"
+          ]
+        }
+      },
+      "commands": {
+        "assignCopilot": {
+          "title": "Assign to Copilot",
+          "entryPoint": "src/commands/assignCopilot.ts",
+          "recordTypes": [
+            "Feature",
+            "Requirement"
+          ]
+        }
+      },
+      "settings": {
+        "repository": {
+          "title": "GitHub Repository",
+          "description": "Format: owner/repo (e.g., myorg/myrepo)",
+          "type": "string",
+          "required": true,
+          "scope": [
+            "account",
+            "user"
+          ]
+        },
+        "baseBranch": {
+          "title": "Base Branch",
+          "description": "The branch to create PRs against",
+          "type": "string",
+          "default": "main",
+          "scope": [
+            "account",
+            "user"
+          ]
+        },
+        "customInstructions": {
+          "title": "Custom Instructions for Copilot",
+          "description": "Additional instructions to include when assigning Copilot",
+          "type": "string",
+          "scope": [
+            "account",
+            "user"
+          ]
+        }
+      }
+    }
+  }
+}
