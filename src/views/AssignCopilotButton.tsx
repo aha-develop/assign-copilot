@@ -3,7 +3,7 @@ import { buildIssue, CopilotIssueData, RecordType } from "../lib/buildIssue";
 import { createIssueWithCopilot, getGitHubToken } from "../lib/github";
 import { Icon } from "./Icon";
 
-const EXTENSION_ID = "aha.assign-copilot";
+const EXTENSION_ID = "aha-develop.assign-copilot";
 const FIELD_NAME = "copilotIssue";
 
 interface AssignCopilotButtonProps {

@@ -1,13 +1,11 @@
 # Assign to Copilot
-  
+
 This is an extension for [Aha! Develop](https://www.aha.io/develop) providing integration with [GitHub Copilot](https://github.com/features/copilot).
 Assign Features and Requirements to Copilot directly from Aha! Develop.
 
 ## Demo
 
 [demo.mp4](https://github.com/user-attachments/assets/8a2f796f-dd23-4465-8f0c-4103c309b9b7)
-
-
 
 ## Installing the extension
 
@@ -26,9 +24,8 @@ npm install -g aha-cli
 
 Clone the repo:
 
-TODO: Add the repository URL here
 ```sh
-git clone ...
+git clone git@github.com:aha-develop/assign-copilot.git
 ```
 
 **Note: In order to install an extension into your Aha! Develop account, you must be an account administrator.**

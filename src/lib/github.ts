@@ -24,13 +24,11 @@ async function getGitHubToken(): Promise<string> {
   return authData.token;
 }
 
-let debug = true;
-
 async function restRequest<T>(
   token: string,
   method: string,
   endpoint: string,
-  body: unknown = null
+  body: unknown = null,
 ): Promise<T> {
   const options: RequestInit = {
     method,
@@ -45,15 +43,6 @@ async function restRequest<T>(
     options.body = JSON.stringify(body);
   }
 
-  if (debug) {
-    console.log("GitHub API Request:", {
-      method,
-      endpoint,
-      body,
-      options,
-    });
-  }
-
   const response = await fetch(`${GITHUB_API}${endpoint}`, options);
   const data = await response.json();
 
@@ -65,7 +54,7 @@ async function restRequest<T>(
 
 async function createIssueWithCopilot(
   token: string,
-  options: CreateIssueOptions
+  options: CreateIssueOptions,
 ): Promise<IssueResponse> {
   const {
     owner,
@@ -100,7 +89,7 @@ The reference "${referenceNum}" is required for tracking.`;
         base_branch: baseBranch,
         custom_instructions: fullInstructions,
       },
-    }
+    },
   );
 }
 
