@@ -39,6 +39,7 @@ type RequirementType = Pick<
 };
 
 export type RecordType = FeatureType | RequirementType;
+
 /**
  * Data stored in extension fields to track Copilot assignment.
  */
@@ -52,13 +53,13 @@ export interface CopilotIssueData {
  * Fetches full record details including name, path, and description.
  */
 async function describeFeature(
-  record: FeatureType
+  record: FeatureType,
 ): Promise<[string, FetchedFeature]> {
   const feature = await aha.models.Feature.select(
     "id",
     "name",
     "path",
-    "referenceNum"
+    "referenceNum",
   )
     .merge({
       description: ["markdownBody"],
@@ -81,7 +82,7 @@ ${
     : ""
 }${feature.requirements
     ?.map(
-      (req) => `- **${req.referenceNum}**: ${req.name || "No name provided"}`
+      (req) => `- **${req.referenceNum}**: ${req.name || "No name provided"}`,
     )
     .join("\n")}
 
@@ -95,13 +96,13 @@ ${feature.tasks && feature.tasks.length > 0 ? "### Todos\n" : ""}${feature.tasks
 }
 
 async function describeRequirement(
-  record: RequirementType
+  record: RequirementType,
 ): Promise<[string, FetchedRequirement]> {
   const requirement: FetchedRequirement = await aha.models.Requirement.select(
     "id",
     "name",
     "referenceNum",
-    "path"
+    "path",
   )
     .merge({
       description: ["markdownBody"],
@@ -144,7 +145,7 @@ ${
  */
 export async function buildIssue(
   record: RecordType,
-  customInstructions?: string
+  customInstructions?: string,
 ): Promise<{
   title: string;
   body: string;
@@ -164,8 +165,6 @@ ${customInstructions}
   }
 
   const title = `${model.referenceNum}: ${model.name}`;
-
-  console.log("Built issue:", { title, body });
 
   return {
     title,

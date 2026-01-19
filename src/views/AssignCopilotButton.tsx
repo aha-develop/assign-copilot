@@ -24,13 +24,13 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
   existingIssue,
 }) => {
   const [status, setStatus] = useState<Status>(
-    existingIssue ? "existing" : "idle"
+    existingIssue ? "existing" : "idle",
   );
   const [message, setMessage] = useState<string>(
-    existingIssue ? "Assigned to Copilot." : ""
+    existingIssue ? "Assigned to Copilot." : "",
   );
   const [issueUrl, setIssueUrl] = useState<string>(
-    existingIssue?.issueUrl || ""
+    existingIssue?.issueUrl || "",
   );
 
   const handleClick = async (e: React.MouseEvent) => {
@@ -39,27 +39,23 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
     setMessage("Loading record details...");
 
     try {
-      // Validate settings
-      const repository = settings.repository;
+      const repository = settings.repository?.trim();
       if (!repository || !repository.includes("/")) {
         throw new Error(
-          "Please configure the repository setting (e.g., owner/repo)"
+          "Please configure the repository setting (e.g., owner/repo)",
         );
       }
       const [owner, repo] = repository.split("/");
-      const baseBranch = settings.baseBranch || "main";
+      const baseBranch = settings.baseBranch?.trim() || "main";
       const customInstructions = settings.customInstructions;
 
-      // Build issue
       const { title, body } = await buildIssue(record, customInstructions);
 
       setMessage("Authenticating with GitHub...");
-      // Get token
       const token = await getGitHubToken();
 
       setMessage("Creating GitHub Issue and assigning Copilot...");
 
-      // Create GitHub Issue with Copilot assigned
       const issue = await createIssueWithCopilot(token, {
         owner,
         repo,
@@ -70,7 +66,6 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
         customInstructions,
       });
 
-      // Save extension field to prevent duplicates
       await record.setExtensionField(EXTENSION_ID, FIELD_NAME, {
         issueNumber: issue.number,
         issueUrl: issue.html_url,

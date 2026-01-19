@@ -1,11 +1,11 @@
 {
   "name": "aha.assign-copilot",
   "description": "Assign to Copilot",
-  "version": "0.0.0",
-  "author": "tim-field",
+  "version": "0.0.1",
+  "author": "Aha! (support@aha.io)",
   "repository": {
     "type": "git",
-    "url": "TODO: Add the GitHub URL to your extension in package.json"
+    "url": "https://github.com/aha-develop/assign-copilot"
   },
   "license": "MIT",
   "devDependencies": {
@@ -19,16 +19,6 @@
           "title": "Copilot",
           "host": "attribute",
           "entryPoint": "src/views/AssignCopilotButton.tsx",
-          "recordTypes": [
-            "Feature",
-            "Requirement"
-          ]
-        }
-      },
-      "commands": {
-        "assignCopilot": {
-          "title": "Assign to Copilot",
-          "entryPoint": "src/commands/assignCopilot.ts",
           "recordTypes": [
             "Feature",
             "Requirement"
