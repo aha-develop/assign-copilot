@@ -5,7 +5,8 @@ Assign Features and Requirements to Copilot directly from Aha! Develop.
 
 ## Demo
 
-[demo.mp4](https://github.com/user-attachments/assets/bdc8011e-7b14-4184-a03a-2c40b00df806)
+[demo.mp4](https://github.com/user-attachments/assets/8a2f796f-dd23-4465-8f0c-4103c309b9b7)
+
 
 
 ## Installing the extension
