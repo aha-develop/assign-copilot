@@ -1,17 +1,13 @@
 # Assign to Copilot
   
-TODO: Supply a short overview of the functionality the extension brings to Aha! Develop
-This [Aha! Develop](https://www.aha.io/develop/overview) extension enables...
-
-It provides these contributions:
-
-TODO: Add a contribution list here. These should briefly describe each of the features provided by this extension.
+This is an extension for [Aha! Develop](https://www.aha.io/develop) providing integration with [GitHub Copilot](https://github.com/features/copilot).
+Assign Features and Requirements to Copilot directly from Aha! Develop.
 
 ## Demo
 
-TODO: Add a short .gif screen recording showing some of the highlights of your extension. This can be recorded using a tool like [LICECap](https://www.cockos.com/licecap/).
+[demo.mp4](https://github.com/user-attachments/assets/8a2f796f-dd23-4465-8f0c-4103c309b9b7)
 
-![demo](demo.gif)
+
 
 ## Installing the extension
 
