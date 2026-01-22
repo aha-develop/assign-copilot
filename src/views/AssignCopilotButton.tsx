@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { buildIssue, CopilotIssueData, RecordType } from "../lib/buildIssue";
 import { createIssueWithCopilot, getGitHubToken } from "../lib/github";
 import { Icon } from "./Icon";
+import { SendToAI } from "./SendToAI";
 
 const EXTENSION_ID = "aha-develop.assign-copilot";
 const FIELD_NAME = "copilotIssue";
@@ -16,15 +17,23 @@ interface AssignCopilotButtonProps {
   existingIssue?: CopilotIssueData;
 }
 
-type Status = "idle" | "loading" | "success" | "error" | "existing";
+type Status =
+  | "not-configured"
+  | "idle"
+  | "loading"
+  | "success"
+  | "error"
+  | "existing";
 
 const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
   record,
   settings,
   existingIssue,
 }) => {
+  const hasSettings = !!settings?.repository;
+
   const [status, setStatus] = useState<Status>(
-    existingIssue ? "existing" : "idle",
+    existingIssue ? "existing" : hasSettings ? "idle" : "not-configured",
   );
   const [message, setMessage] = useState<string>(
     existingIssue ? "Assigned to Copilot." : "",
@@ -37,6 +46,8 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
     e.preventDefault();
     setStatus("loading");
     setMessage("Loading record details...");
+
+    console.log("wha?");
 
     try {
       const repository = settings.repository?.trim();
@@ -84,53 +95,93 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
   };
 
   return (
-    <div style={{ padding: "8px 0" }}>
-      {status === "idle" && (
-        <aha-button kind="secondary" size="small" onClick={handleClick}>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              marginTop: "4px",
-            }}
-          >
-            <Icon /> Send to Copilot
-          </span>
-        </aha-button>
+    <>
+      {(status === "idle" ||
+        status === "error" ||
+        status === "not-configured") && (
+        <SendToAI
+          label={`Build with Copilot`}
+          icon={<Icon />}
+          button={
+            status === "not-configured" ? (
+              <aha-button
+                kind="secondary"
+                size="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open("/develop/settings/account/extensions");
+                }}
+              >
+                Configure Copilot <i className="fa-regular fa-gear"></i>
+              </aha-button>
+            ) : (
+              <aha-button kind="secondary" size="small" onClick={handleClick}>
+                Send to Copilot <i className="fa-regular fa-arrow-right"></i>
+              </aha-button>
+            )
+          }
+          footer={`Share this ${record.typename.toLowerCase()} with Copilot to begin implementation.`}
+          alert={
+            status === "error" ? (
+              <aha-alert type="danger" size="mini">
+                {message}
+              </aha-alert>
+            ) : null
+          }
+        />
       )}
 
       {status === "loading" && (
-        <aha-alert type="info">
-          <aha-spinner slot="icon" /> {message}
-        </aha-alert>
+        <SendToAI
+          label="Sending to Copilot..."
+          icon={<Icon />}
+          button={
+            <aha-button
+              kind="secondary"
+              size="small"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <span>
+                Creating issue
+                <aha-spinner style={{ marginLeft: "6px" }} size="10px" />
+              </span>
+            </aha-button>
+          }
+          footer={message}
+        />
       )}
 
       {(status === "success" || status === "existing") && (
-        <aha-alert type={status === "success" ? "success" : "info"}>
-          {message}{" "}
-          <a href={issueUrl} target="_blank" rel="noopener noreferrer">
-            View Issue
-          </a>
-        </aha-alert>
+        <>
+          <SendToAI
+            label="Assigned to Copilot"
+            icon={<Icon />}
+            button={
+              <aha-button
+                kind="secondary"
+                size="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(issueUrl, "_blank", "noopener noreferrer");
+                }}
+              >
+                View Session
+                <i className="fa-regular fa-arrow-up-right" />
+              </aha-button>
+            }
+            alert={
+              status === "success" ? (
+                <aha-alert type="success" size="mini">
+                  {message}
+                </aha-alert>
+              ) : null
+            }
+          />
+        </>
       )}
-
-      {status === "error" && (
-        <aha-alert type="danger">
-          {message || "An unexpected error occurred."}{" "}
-          <aha-button
-            size="small"
-            kind="secondary"
-            onClick={() => {
-              setStatus("idle");
-              setMessage("");
-            }}
-          >
-            Try again
-          </aha-button>
-        </aha-alert>
-      )}
-    </div>
+    </>
   );
 };
 
