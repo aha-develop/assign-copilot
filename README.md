@@ -3,6 +3,8 @@
 This is an extension for [Aha! Develop](https://www.aha.io/develop) providing integration with [GitHub Copilot](https://github.com/features/copilot).
 Assign Features and Requirements to Copilot directly from Aha! Develop.
 
+We recommend using this extension in combination with the [Github Develop extension](https://github.com/aha-develop/github).
+
 ## Demo
 
 [demo.mp4](https://github.com/user-attachments/assets/8a2f796f-dd23-4465-8f0c-4103c309b9b7)
