@@ -47,8 +47,6 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
     setStatus("loading");
     setMessage("Loading record details...");
 
-    console.log("wha?");
-
     try {
       const repository = settings.repository?.trim();
       if (!repository || !repository.includes("/")) {
@@ -186,7 +184,6 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
 };
 
 aha.on("assignCopilotButton", ({ record, fields }, { settings }) => {
-  console.log(JSON.stringify({ settings, fields, record }, null, 2));
   const typedRecord = record as unknown as RecordType;
 
   const existingIssue = fields?.[FIELD_NAME] as CopilotIssueData | undefined;
