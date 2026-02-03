@@ -13,8 +13,7 @@ We recommend using this extension in combination with the [Github Develop extens
 
 **Note: In order to install an extension into your Aha! Develop account, you must be an account administrator.**
 
-TODO: Fill in a link to your built extension package
-Install the Assign to Copilot extension by clicking [here](https://secure.aha.io/settings/account/extensions/install?url=).
+Install the Assign to Copilot extension by clicking [here](https://secure.aha.io/settings/account/extensions/install?url=https%3A%2F%2Fsecure.aha.io%2Fextensions%2Faha-develop.assign-copilot.gz).
 
 ## Working on the extension
 
