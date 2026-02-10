@@ -165,7 +165,7 @@ const AssignCopilotButton: React.FC<AssignCopilotButtonProps> = ({
                   window.open(issueUrl, "_blank", "noopener noreferrer");
                 }}
               >
-                View Session
+                View session
                 <i className="fa-regular fa-arrow-up-right" />
               </aha-button>
             }
