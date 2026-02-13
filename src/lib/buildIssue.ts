@@ -1,19 +1,25 @@
+type RecordAttachment = {
+  fileName: string;
+  contentType: string;
+  downloadUrl: string;
+};
+
 type FetchedFeature = Aha.Feature & {
   referenceNum: string;
   name: string;
   path: string;
-  description?: { markdownBody?: string };
+  description?: { markdownBody?: string; attachments?: RecordAttachment[] };
 };
 
 type FetchedRequirement = Aha.Requirement & {
   referenceNum: string;
   name: string;
   path: string;
-  description?: { markdownBody?: string };
+  description?: { markdownBody?: string; attachments?: RecordAttachment[] };
   feature?: {
     referenceNum: string;
     name?: string;
-    description?: { markdownBody?: string };
+    description?: { markdownBody?: string; attachments?: RecordAttachment[] };
   };
   tasks?: Array<{
     name: string;
@@ -52,9 +58,11 @@ export interface CopilotIssueData {
 /**
  * Fetches full record details including name, path, and description.
  */
-async function describeFeature(
-  record: FeatureType,
-): Promise<[string, FetchedFeature]> {
+async function describeFeature(record: FeatureType): Promise<{
+  body: string;
+  attachments: Aha.Attachment[];
+  model: FetchedFeature;
+}> {
   const feature = await aha.models.Feature.select(
     "id",
     "name",
@@ -62,7 +70,11 @@ async function describeFeature(
     "referenceNum",
   )
     .merge({
-      description: ["markdownBody"],
+      description: aha.models.Note.select("markdownBody").merge({
+        attachments: aha.models.Attachment.select("fileName", "contentType", {
+          downloadUrl: { withToken: true },
+        }),
+      }),
       tasks: aha.models.Task.select("name", "body"),
       requirements: aha.models.Requirement.select("name", "referenceNum"),
     })
@@ -92,12 +104,15 @@ ${feature.tasks && feature.tasks.length > 0 ? "### Todos\n" : ""}${feature.tasks
 
 **Aha! Reference:** [${record.referenceNum}](${feature.path})
 `;
-  return [body, feature];
+
+  return {
+    body,
+    attachments: feature.description?.attachments ?? [],
+    model: feature,
+  };
 }
 
-async function describeRequirement(
-  record: RequirementType,
-): Promise<[string, FetchedRequirement]> {
+async function describeRequirement(record: RequirementType) {
   const requirement: FetchedRequirement = await aha.models.Requirement.select(
     "id",
     "name",
@@ -105,10 +120,18 @@ async function describeRequirement(
     "path",
   )
     .merge({
-      description: ["markdownBody"],
+      description: aha.models.Note.select("markdownBody").merge({
+        attachments: aha.models.Attachment.select("fileName", "contentType", {
+          downloadUrl: { withToken: true },
+        }),
+      }),
       tasks: aha.models.Task.select("name", "body"),
       feature: aha.models.Feature.select("name", "referenceNum").merge({
-        description: ["markdownBody"],
+        description: aha.models.Note.select("markdownBody").merge({
+          attachments: aha.models.Attachment.select("fileName", "contentType", {
+            downloadUrl: { withToken: true },
+          }),
+        }),
       }),
     })
     .find(record.referenceNum);
@@ -134,7 +157,14 @@ ${
 **Aha! Reference:** [${record.referenceNum}](${requirement.path})
 `;
 
-  return [body, requirement];
+  return {
+    body,
+    attachments: [
+      ...(requirement.description?.attachments ?? []),
+      ...(requirement.feature.description?.attachments ?? []),
+    ],
+    model: requirement,
+  };
 }
 
 /**
@@ -151,10 +181,17 @@ export async function buildIssue(
   body: string;
   model: FetchedFeature | FetchedRequirement;
 }> {
-  let [body, model] =
+  let { body, attachments, model } =
     record.typename === "Feature"
       ? await describeFeature(record as FeatureType)
       : await describeRequirement(record as RequirementType);
+
+  if (attachments.length > 0) {
+    body += `\n\n### Attachments\n`;
+    attachments.forEach((att) => {
+      body += `- [${att.fileName}](${att.downloadUrl})\n`;
+    });
+  }
 
   if (customInstructions) {
     body += `
